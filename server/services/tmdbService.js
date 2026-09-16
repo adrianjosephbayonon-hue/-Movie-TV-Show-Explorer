@@ -2,27 +2,25 @@ const axios = require("axios");
 
 const tmdbClient = axios.create({
   baseURL: process.env.TMDB_BASE_URL,
-  params: {
-    api_key: process.env.TMDB_API_KEY,
-    language: "en-US",
+  timeout: 15000,
+  headers: {
+    Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
+    Accept: "application/json",
   },
 });
 
 async function getTrendingMovies() {
   const response = await tmdbClient.get("/trending/movie/week");
-
   return response.data;
 }
 
 async function getPopularMovies() {
   const response = await tmdbClient.get("/movie/popular");
-
   return response.data;
 }
 
 async function getPopularTVShows() {
   const response = await tmdbClient.get("/tv/popular");
-
   return response.data;
 }
 

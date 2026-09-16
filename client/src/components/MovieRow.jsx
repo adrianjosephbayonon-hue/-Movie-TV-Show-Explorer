@@ -1,6 +1,6 @@
 import MovieCard from "./MovieCard";
 
-function MovieRow({ title, movies }) {
+function MovieRow({ title, movies = [] }) {
   return (
     <section
       className="py-8"
@@ -15,14 +15,20 @@ function MovieRow({ title, movies }) {
         </h2>
       </div>
 
-      <div className="flex gap-4 overflow-x-auto pb-3">
-        {movies.map((movie) => (
-          <MovieCard
-            key={movie.id}
-            movie={movie}
-          />
-        ))}
-      </div>
+      {movies.length > 0 ? (
+        <div className="flex gap-4 overflow-x-auto pb-3">
+          {movies.map((movie) => (
+            <MovieCard
+              key={`${movie.media_type || "movie"}-${movie.id}`}
+              movie={movie}
+            />
+          ))}
+        </div>
+      ) : (
+        <p className="text-slate-400">
+          No titles available right now.
+        </p>
+      )}
     </section>
   );
 }
