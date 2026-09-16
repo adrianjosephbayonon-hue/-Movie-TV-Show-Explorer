@@ -3,13 +3,13 @@ import {
   ArrowLeft,
   CalendarDays,
   Heart,
-  Play,
   Star,
   Tv,
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 
 import { getTVDetails } from "../../api/movies";
+import TrailerEmbed from "../../components/TrailerEmbed";
 import {
   addToWatchlist,
   isInWatchlist,
@@ -205,7 +205,10 @@ function TVDetails() {
 
             <div className="flex flex-col justify-center">
               <p className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-[#00b8a9]">
-                <Tv size={16} aria-hidden="true" />
+                <Tv
+                  size={16}
+                  aria-hidden="true"
+                />
                 TV Show
               </p>
 
@@ -317,21 +320,10 @@ function TVDetails() {
             </h2>
           </div>
 
-          <div className="aspect-video overflow-hidden rounded-2xl bg-[#121a2b]">
-            <iframe
-              src={`https://www.youtube.com/embed/${trailer.key}`}
-              title={`${show.name} official trailer`}
-              className="h-full w-full"
-              loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
-          </div>
-
-          <p className="mt-3 flex items-center gap-2 text-sm text-slate-500">
-            <Play size={14} aria-hidden="true" />
-            Trailer provided through YouTube.
-          </p>
+          <TrailerEmbed
+            videoKey={trailer.key}
+            title={show.name}
+          />
         </section>
       )}
 

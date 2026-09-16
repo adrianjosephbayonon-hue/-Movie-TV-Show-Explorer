@@ -4,12 +4,12 @@ import {
   CalendarDays,
   Clock,
   Heart,
-  Play,
   Star,
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 
 import { getMovieDetails } from "../../api/movies";
+import TrailerEmbed from "../../components/TrailerEmbed";
 import {
   addToWatchlist,
   isInWatchlist,
@@ -85,7 +85,11 @@ function MovieDetails() {
   if (loading) {
     return (
       <main className="flex min-h-[calc(100vh-64px)] items-center justify-center px-5">
-        <div className="flex items-center gap-3 text-slate-300">
+        <div
+          className="flex items-center gap-3 text-slate-300"
+          role="status"
+          aria-label="Loading movie details"
+        >
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#6c63ff] border-t-transparent" />
 
           <span>Loading movie details...</span>
@@ -143,12 +147,13 @@ function MovieDetails() {
     ? movie.runtime % 60
     : 0;
 
-  const trailer = movie.videos?.results?.find(
-    (video) =>
-      video.site === "YouTube" &&
-      video.type === "Trailer" &&
-      video.official
-  ) ||
+  const trailer =
+    movie.videos?.results?.find(
+      (video) =>
+        video.site === "YouTube" &&
+        video.type === "Trailer" &&
+        video.official
+    ) ||
     movie.videos?.results?.find(
       (video) =>
         video.site === "YouTube" &&
@@ -169,6 +174,7 @@ function MovieDetails() {
             />
 
             <div className="absolute inset-0 bg-[#0b1020]/80" />
+
             <div className="absolute inset-0 bg-gradient-to-t from-[#0b1020] via-[#0b1020]/60 to-[#0b1020]/30" />
           </div>
         )}
@@ -270,6 +276,11 @@ function MovieDetails() {
                 <button
                   type="button"
                   onClick={handleWatchlistClick}
+                  aria-label={
+                    saved
+                      ? `Remove ${movie.title} from My List`
+                      : `Add ${movie.title} to My List`
+                  }
                   aria-pressed={saved}
                   className={`inline-flex items-center gap-2 rounded-lg px-5 py-3 font-semibold transition ${
                     saved
@@ -305,21 +316,10 @@ function MovieDetails() {
             </h2>
           </div>
 
-          <div className="aspect-video overflow-hidden rounded-2xl bg-[#121a2b]">
-            <iframe
-              src={`https://www.youtube.com/embed/${trailer.key}`}
-              title={`${movie.title} official trailer`}
-              className="h-full w-full"
-              loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
-          </div>
-
-          <p className="mt-3 flex items-center gap-2 text-sm text-slate-500">
-            <Play size={14} aria-hidden="true" />
-            Trailer provided through YouTube.
-          </p>
+          <TrailerEmbed
+            videoKey={trailer.key}
+            title={movie.title}
+          />
         </section>
       )}
 

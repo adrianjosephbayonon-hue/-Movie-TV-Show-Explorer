@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
+import CookieConsent from "./components/CookieConsent";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
@@ -30,7 +31,10 @@ function App() {
 
             <Route path="/search" element={<Search />} />
 
-            <Route path="/watchlist" element={<Watchlist />} />
+            <Route
+              path="/watchlist"
+              element={<Watchlist />}
+            />
 
             <Route
               path="/movie/:id"
@@ -57,8 +61,6 @@ function App() {
               element={<Cookies />}
             />
 
-
-
             <Route
               path="*"
               element={<NotFound />}
@@ -67,6 +69,8 @@ function App() {
         </div>
 
         <Footer />
+
+        <CookieConsent />
       </div>
     </BrowserRouter>
   );
