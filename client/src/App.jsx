@@ -5,6 +5,10 @@ import Home from "./pages/Home";
 import MovieDetails from "./pages/Details/MovieDetails";
 import TVDetails from "./pages/Details/TVDetails";
 import Movies from "./pages/Movies/Movies";
+import TV from "./pages/TV/TV";
+import Search from "./pages/Search/Search";
+import Watchlist from "./pages/Watchlist/Watchlist";
+import NotFound from "./pages/NotFound/NotFound";
 
 function App() {
   return (
@@ -15,10 +19,13 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
 
-          <Route
-            path="/movies"
-            element={<Movies />}
-          />
+          <Route path="/movies" element={<Movies />} />
+
+          <Route path="/tv" element={<TV />} />
+
+          <Route path="/search" element={<Search />} />
+
+          <Route path="/watchlist" element={<Watchlist />} />
 
           <Route
             path="/movie/:id"
@@ -32,17 +39,7 @@ function App() {
 
           <Route
             path="*"
-            element={
-              <main className="mx-auto max-w-7xl px-5 py-20 text-center">
-                <h1 className="text-3xl font-bold">
-                  Page not found
-                </h1>
-
-                <p className="mt-3 text-slate-400">
-                  The page you're looking for doesn't exist.
-                </p>
-              </main>
-            }
+            element={<NotFound />}
           />
         </Routes>
       </div>

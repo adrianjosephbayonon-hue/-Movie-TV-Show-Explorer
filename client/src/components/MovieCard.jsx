@@ -1,6 +1,12 @@
 import { Heart } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import {
+  addToWatchlist,
+  isInWatchlist,
+  removeFromWatchlist,
+} from "../utils/watchlist";
 import { getPosterUrl } from "../utils/tmdb";
 
 function MovieCard({ movie }) {
@@ -11,7 +17,9 @@ function MovieCard({ movie }) {
     movie.first_air_date?.slice(0, 4) ||
     "N/A";
 
-  const mediaType = movie.media_type || (movie.first_air_date ? "tv" : "movie");
+  const mediaType =
+    movie.media_type ||
+    (movie.first_air_date ? "tv" : "movie");
 
   const detailsPath =
     mediaType === "tv"
@@ -19,6 +27,27 @@ function MovieCard({ movie }) {
       : `/movie/${movie.id}`;
 
   const posterUrl = getPosterUrl(movie.poster_path);
+
+  const [saved, setSaved] = useState(() =>
+    isInWatchlist(movie.id, mediaType)
+  );
+
+  function handleWatchlistClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (saved) {
+      removeFromWatchlist(movie.id, mediaType);
+      setSaved(false);
+    } else {
+      addToWatchlist({
+        ...movie,
+        media_type: mediaType,
+      });
+
+      setSaved(true);
+    }
+  }
 
   return (
     <article className="group relative min-w-[150px] sm:min-w-[180px]">
@@ -55,10 +84,24 @@ function MovieCard({ movie }) {
 
       <button
         type="button"
-        aria-label={`Add ${title} to My List`}
-        className="absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-[#0b1020]/80 text-white opacity-0 backdrop-blur-sm transition group-hover:opacity-100 focus-visible:opacity-100 hover:bg-[#6c63ff]"
+        onClick={handleWatchlistClick}
+        aria-label={
+          saved
+            ? `Remove ${title} from My List`
+            : `Add ${title} to My List`
+        }
+        aria-pressed={saved}
+        className={`absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-sm transition focus-visible:opacity-100 ${
+          saved
+            ? "bg-[#6c63ff] text-white opacity-100"
+            : "bg-[#0b1020]/80 text-white opacity-0 group-hover:opacity-100 hover:bg-[#6c63ff]"
+        }`}
       >
-        <Heart size={17} aria-hidden="true" />
+        <Heart
+          size={17}
+          fill={saved ? "currentColor" : "none"}
+          aria-hidden="true"
+        />
       </button>
     </article>
   );

@@ -2,32 +2,32 @@ import { useEffect, useState } from "react";
 import { AlertCircle, Loader2 } from "lucide-react";
 
 import MovieCard from "../../components/MovieCard";
-import { getPopularMovies } from "../../api/movies";
+import { getPopularTVShows } from "../../api/movies";
 
-function Movies() {
-  const [movies, setMovies] = useState([]);
+function TV() {
+  const [shows, setShows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     let cancelled = false;
 
-    async function loadMovies() {
+    async function loadTVShows() {
       try {
         setLoading(true);
         setError("");
 
-        const data = await getPopularMovies();
+        const data = await getPopularTVShows();
 
         if (!cancelled) {
-          setMovies(data.results || []);
+          setShows(data.results || []);
         }
       } catch (err) {
-        console.error("Failed to load movies:", err);
+        console.error("Failed to load TV shows:", err);
 
         if (!cancelled) {
           setError(
-            "We couldn't load the movies right now. Please try again."
+            "We couldn't load the TV shows right now. Please try again."
           );
         }
       } finally {
@@ -37,7 +37,7 @@ function Movies() {
       }
     }
 
-    loadMovies();
+    loadTVShows();
 
     return () => {
       cancelled = true;
@@ -52,20 +52,20 @@ function Movies() {
         </p>
 
         <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
-          Popular Movies
+          Popular TV Shows
         </h1>
 
         <p className="mt-3 max-w-2xl text-slate-400">
-          Discover popular movies currently available through
-          CineVault.
+          Explore popular TV shows and discover your next series
+          to watch.
         </p>
       </header>
 
       {loading && (
         <div
-          className="flex min-h-80 items-center justify-center"
+          className="flex min-h-[300px] items-center justify-center"
           role="status"
-          aria-label="Loading movies"
+          aria-label="Loading TV shows"
         >
           <div className="flex items-center gap-3 text-slate-300">
             <Loader2
@@ -74,7 +74,7 @@ function Movies() {
               aria-hidden="true"
             />
 
-            <span>Loading movies...</span>
+            <span>Loading TV shows...</span>
           </div>
         </div>
       )}
@@ -93,7 +93,7 @@ function Movies() {
 
             <div>
               <h2 className="font-semibold text-white">
-                Unable to load movies
+                Unable to load TV shows
               </h2>
 
               <p className="mt-1 text-sm text-slate-300">
@@ -104,30 +104,30 @@ function Movies() {
         </div>
       )}
 
-      {!loading && !error && movies.length === 0 && (
+      {!loading && !error && shows.length === 0 && (
         <div className="rounded-xl bg-[#121a2b] p-8 text-center">
           <p className="text-slate-400">
-            No movies are available right now.
+            No TV shows are available right now.
           </p>
         </div>
       )}
 
-      {!loading && !error && movies.length > 0 && (
-        <section aria-labelledby="popular-movies-heading">
+      {!loading && !error && shows.length > 0 && (
+        <section aria-labelledby="popular-tv-heading">
           <h2
-            id="popular-movies-heading"
+            id="popular-tv-heading"
             className="sr-only"
           >
-            Popular Movies
+            Popular TV Shows
           </h2>
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-            {movies.map((movie) => (
+            {shows.map((show) => (
               <MovieCard
-                key={movie.id}
+                key={show.id}
                 movie={{
-                  ...movie,
-                  media_type: "movie",
+                  ...show,
+                  media_type: "tv",
                 }}
               />
             ))}
@@ -138,4 +138,4 @@ function Movies() {
   );
 }
 
-export default Movies;
+export default TV;
