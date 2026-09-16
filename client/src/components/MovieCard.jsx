@@ -50,13 +50,13 @@ function MovieCard({ movie }) {
   }
 
   return (
-    <article className="group relative min-w-[150px] sm:min-w-[180px]">
+    <article className="group relative min-w-37.5 sm:min-w-45">
       <Link
         to={detailsPath}
         className="block overflow-hidden rounded-xl bg-[#121a2b]"
         aria-label={`View details for ${title}`}
       >
-        <div className="aspect-[2/3] overflow-hidden bg-[#1b263b]">
+        <div className="aspect-2/3 overflow-hidden bg-[#1b263b]">
           {posterUrl ? (
             <img
               src={posterUrl}

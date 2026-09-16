@@ -98,7 +98,7 @@ function Home() {
       >
         {loading && (
           <div
-            className="flex min-h-[250px] items-center justify-center"
+            className="flex min-h-250px items-center justify-center"
             role="status"
             aria-label="Loading discovery content"
           >
