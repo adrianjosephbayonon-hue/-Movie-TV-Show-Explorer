@@ -12,18 +12,17 @@ function Footer() {
     <footer className="border-t border-white/5 bg-[#0b1020]">
       <div className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         <div className="grid gap-10 md:grid-cols-3">
-          {/* Brand */}
           <div>
             <Link
               to="/"
-              className="inline-flex items-center gap-2"
+              className="inline-flex items-center gap-2 rounded-lg focus-visible:outline-2 focus-visible:outline-[#00b8a9] focus-visible:outline-offset-3"
               aria-label="CineVault home"
             >
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#6c63ff]">
-                <Film
-                  size={20}
-                  aria-hidden="true"
-                />
+              <span
+                className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#6c63ff]"
+                aria-hidden="true"
+              >
+                <Film size={20} />
               </span>
 
               <span className="text-lg font-bold tracking-tight">
@@ -37,7 +36,6 @@ function Footer() {
             </p>
           </div>
 
-          {/* Explore */}
           <div>
             <h2 className="text-sm font-semibold uppercase tracking-wider text-white">
               Explore
@@ -49,62 +47,46 @@ function Footer() {
             >
               <Link
                 to="/"
-                className="flex items-center gap-2 text-sm text-slate-500 transition hover:text-white"
+                className="flex items-center gap-2 rounded-md text-sm text-slate-500 transition hover:text-white focus-visible:outline-2 focus-visible:outline-[#00b8a9] focus-visible:outline-offset-2"
               >
-                <Film
-                  size={15}
-                  aria-hidden="true"
-                />
+                <Film size={15} aria-hidden="true" />
                 Home
               </Link>
 
               <Link
                 to="/movies"
-                className="flex items-center gap-2 text-sm text-slate-500 transition hover:text-white"
+                className="flex items-center gap-2 rounded-md text-sm text-slate-500 transition hover:text-white focus-visible:outline-2 focus-visible:outline-[#00b8a9] focus-visible:outline-offset-2"
               >
-                <Film
-                  size={15}
-                  aria-hidden="true"
-                />
+                <Film size={15} aria-hidden="true" />
                 Movies
               </Link>
 
               <Link
                 to="/tv"
-                className="flex items-center gap-2 text-sm text-slate-500 transition hover:text-white"
+                className="flex items-center gap-2 rounded-md text-sm text-slate-500 transition hover:text-white focus-visible:outline-2 focus-visible:outline-[#00b8a9] focus-visible:outline-offset-2"
               >
-                <Film
-                  size={15}
-                  aria-hidden="true"
-                />
+                <Film size={15} aria-hidden="true" />
                 TV Shows
               </Link>
 
               <Link
                 to="/search"
-                className="flex items-center gap-2 text-sm text-slate-500 transition hover:text-white"
+                className="flex items-center gap-2 rounded-md text-sm text-slate-500 transition hover:text-white focus-visible:outline-2 focus-visible:outline-[#00b8a9] focus-visible:outline-offset-2"
               >
-                <Search
-                  size={15}
-                  aria-hidden="true"
-                />
+                <Search size={15} aria-hidden="true" />
                 Search
               </Link>
 
               <Link
                 to="/watchlist"
-                className="flex items-center gap-2 text-sm text-slate-500 transition hover:text-white"
+                className="flex items-center gap-2 rounded-md text-sm text-slate-500 transition hover:text-white focus-visible:outline-2 focus-visible:outline-[#00b8a9] focus-visible:outline-offset-2"
               >
-                <Heart
-                  size={15}
-                  aria-hidden="true"
-                />
+                <Heart size={15} aria-hidden="true" />
                 My List
               </Link>
             </nav>
           </div>
 
-          {/* Project */}
           <div>
             <h2 className="text-sm font-semibold uppercase tracking-wider text-white">
               Project
@@ -116,33 +98,49 @@ function Footer() {
               and TMDB.
             </p>
 
-            <div className="mt-5 flex flex-col items-start gap-3">
+            <div className="mt-5 rounded-lg border border-white/5 bg-white/[0.02] p-4">
+              <p className="text-xs leading-5 text-slate-500">
+                This product uses the TMDB API but is not
+                endorsed or certified by TMDB.
+              </p>
+
               <a
-                href="https://github.com"
+                href="https://www.themoviedb.org/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-slate-400 transition hover:text-white"
+                className="mt-2 inline-block text-xs font-medium text-slate-400 transition hover:text-white focus-visible:outline-2 focus-visible:outline-[#00b8a9] focus-visible:outline-offset-2"
+              >
+                Visit TMDB
+              </a>
+            </div>
+
+            <div className="mt-5 flex flex-col items-start gap-3">
+              <a
+                href="https://github.com/adrianjosephbayonon-hue/-Movie-TV-Show-Explorer"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-md text-sm text-slate-400 transition hover:text-white focus-visible:outline-2 focus-visible:outline-[#00b8a9] focus-visible:outline-offset-2"
               >
                 GitHub
               </a>
 
               <Link
                 to="/privacy"
-                className="text-sm text-slate-400 transition hover:text-white"
+                className="rounded-md text-sm text-slate-400 transition hover:text-white focus-visible:outline-2 focus-visible:outline-[#00b8a9] focus-visible:outline-offset-2"
               >
                 Privacy Policy
               </Link>
 
               <Link
                 to="/terms"
-                className="text-sm text-slate-400 transition hover:text-white"
+                className="rounded-md text-sm text-slate-400 transition hover:text-white focus-visible:outline-2 focus-visible:outline-[#00b8a9] focus-visible:outline-offset-2"
               >
                 Terms of Service
               </Link>
 
               <Link
                 to="/cookies"
-                className="text-sm text-slate-400 transition hover:text-white"
+                className="rounded-md text-sm text-slate-400 transition hover:text-white focus-visible:outline-2 focus-visible:outline-[#00b8a9] focus-visible:outline-offset-2"
               >
                 Cookie Policy
               </Link>
@@ -156,9 +154,7 @@ function Footer() {
               © {currentYear} CineVault. All rights reserved.
             </p>
 
-            <p>
-              Built for movie and TV discovery.
-            </p>
+            <p>Built for movie and TV discovery.</p>
           </div>
         </div>
       </div>

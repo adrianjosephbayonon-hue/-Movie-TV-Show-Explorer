@@ -9,6 +9,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 
 import { getMovieDetails } from "../../api/movies";
+import DetailsSkeleton from "../../components/DetailsSkeleton";
 import TrailerEmbed from "../../components/TrailerEmbed";
 import {
   addToWatchlist,
@@ -83,19 +84,7 @@ function MovieDetails() {
   }
 
   if (loading) {
-    return (
-      <main className="flex min-h-[calc(100vh-64px)] items-center justify-center px-5">
-        <div
-          className="flex items-center gap-3 text-slate-300"
-          role="status"
-          aria-label="Loading movie details"
-        >
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#6c63ff] border-t-transparent" />
-
-          <span>Loading movie details...</span>
-        </div>
-      </main>
-    );
+    return <DetailsSkeleton />;
   }
 
   if (error) {

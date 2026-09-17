@@ -1,23 +1,34 @@
 import { useEffect, useState } from "react";
-import { AlertCircle, Loader2, Search as SearchIcon } from "lucide-react";
+import {
+  AlertCircle,
+  ChevronLeft,
+  ChevronRight,
+  Search as SearchIcon,
+} from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
-import MovieCard from "../../components/MovieCard";
 import { searchMovies } from "../../api/movies";
+import MovieCard from "../../components/MovieCard";
+import MovieGridSkeleton from "../../components/MovieGridSkeleton";
 
 function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const searchQuery = searchParams.get("query")?.trim() || "";
+  const query = searchParams.get("query")?.trim() || "";
+  const pageFromUrl = Math.max(
+    1,
+    Number(searchParams.get("page")) || 1
+  );
 
-  const [query, setQuery] = useState(searchQuery);
+  const [input, setInput] = useState(query);
   const [results, setResults] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!searchQuery) {
-      return;
+    if (!query) {
+      return undefined;
     }
 
     let cancelled = false;
@@ -27,22 +38,32 @@ function Search() {
         setLoading(true);
         setError("");
 
-        const data = await searchMovies(searchQuery);
+        const data = await searchMovies(
+          query,
+          pageFromUrl
+        );
 
-        if (!cancelled) {
-          const filteredResults = (data.results || []).filter(
-            (item) =>
-              item.media_type === "movie" ||
-              item.media_type === "tv"
-          );
-
-          setResults(filteredResults);
+        if (cancelled) {
+          return;
         }
+
+        const filteredResults = (data.results || []).filter(
+          (item) =>
+            item.media_type === "movie" ||
+            item.media_type === "tv"
+        );
+
+        setResults(filteredResults);
+
+        setTotalPages(
+          Math.min(Number(data.total_pages) || 1, 500)
+        );
       } catch (err) {
-        console.error("Search request failed:", err);
+        console.error("Failed to search:", err);
 
         if (!cancelled) {
           setResults([]);
+          setTotalPages(1);
           setError(
             "We couldn't complete your search right now. Please try again."
           );
@@ -59,52 +80,66 @@ function Search() {
     return () => {
       cancelled = true;
     };
-  }, [searchQuery]);
+  }, [query, pageFromUrl]);
 
   function handleSubmit(event) {
     event.preventDefault();
 
-    const trimmedQuery = query.trim();
+    const trimmedInput = input.trim();
 
-    if (!trimmedQuery) {
+    if (!trimmedInput) {
       setSearchParams({});
       return;
     }
 
     setSearchParams({
-      query: trimmedQuery,
+      query: trimmedInput,
+      page: "1",
     });
   }
 
+  function handlePageChange(nextPage) {
+    setSearchParams({
+      query,
+      page: String(nextPage),
+    });
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+
+  const showResults = query && results.length > 0;
+
+  const showNoResults =
+    query &&
+    !loading &&
+    !error &&
+    results.length === 0;
+
   return (
-    <main className="mx-auto min-h-screen max-w-7xl px-5 py-10 lg:px-8">
-      <header className="mb-8">
-        <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-[#00b8a9]">
-          Discover
-        </p>
+    <main className="min-h-screen px-5 py-10 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="max-w-2xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#00b8a9]">
+            Explore
+          </p>
 
-        <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
-          Search
-        </h1>
+          <h1 className="mt-2 text-3xl font-black tracking-tight text-white sm:text-4xl">
+            Search Movies & TV Shows
+          </h1>
 
-        <p className="mt-3 max-w-2xl text-slate-400">
-          Search for movies and TV shows by title.
-        </p>
-      </header>
+          <p className="mt-3 text-slate-400">
+            Find movies and TV shows by title.
+          </p>
+        </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="mb-10"
-        role="search"
-      >
-        <label
-          htmlFor="movie-search"
-          className="sr-only"
+        <form
+          onSubmit={handleSubmit}
+          className="mt-8 flex max-w-3xl gap-3"
+          role="search"
         >
-          Search movies and TV shows
-        </label>
-
-        <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
             <SearchIcon
               size={20}
@@ -112,133 +147,160 @@ function Search() {
               aria-hidden="true"
             />
 
+            <label
+              htmlFor="search-input"
+              className="sr-only"
+            >
+              Search movies and TV shows
+            </label>
+
             <input
-              id="movie-search"
+              id="search-input"
               type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              value={input}
+              onChange={(event) =>
+                setInput(event.target.value)
+              }
               placeholder="Search for a movie or TV show..."
-              className="w-full rounded-lg border border-white/10 bg-[#121a2b] py-3 pl-12 pr-4 text-white placeholder:text-slate-500 focus:border-[#6c63ff] focus:outline-none"
+              maxLength={100}
+              className="h-12 w-full rounded-lg border border-white/10 bg-[#121a2b] pl-12 pr-4 text-white placeholder:text-slate-600 focus:border-[#6c63ff] focus:outline-none"
             />
           </div>
 
           <button
             type="submit"
-            className="rounded-lg bg-[#6c63ff] px-6 py-3 font-semibold text-white transition hover:bg-[#5b52e6]"
+            className="rounded-lg bg-[#6c63ff] px-5 font-semibold text-white transition hover:bg-[#5b52e6]"
           >
             Search
           </button>
-        </div>
-      </form>
+        </form>
 
-      {loading && (
-        <div
-          className="flex min-h-[250px] items-center justify-center"
-          role="status"
-          aria-label="Searching"
-        >
-          <div className="flex items-center gap-3 text-slate-300">
-            <Loader2
-              size={24}
-              className="animate-spin text-[#6c63ff]"
-              aria-hidden="true"
-            />
-
-            <span>Searching...</span>
-          </div>
-        </div>
-      )}
-
-      {!loading && error && (
-        <div
-          className="rounded-xl border border-[#e85d75]/30 bg-[#e85d75]/10 p-5"
-          role="alert"
-        >
-          <div className="flex items-start gap-3">
-            <AlertCircle
-              size={22}
-              className="mt-0.5 shrink-0 text-[#e85d75]"
-              aria-hidden="true"
-            />
-
-            <div>
-              <h2 className="font-semibold text-white">
-                Search unavailable
-              </h2>
-
-              <p className="mt-1 text-sm text-slate-300">
-                {error}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {!loading &&
-        !error &&
-        searchQuery &&
-        results.length === 0 && (
-          <div className="rounded-xl bg-[#121a2b] p-8 text-center">
-            <h2 className="text-lg font-semibold text-white">
-              No results found
-            </h2>
-
-            <p className="mt-2 text-slate-400">
-              Try searching for another movie or TV show.
-            </p>
-          </div>
-        )}
-
-      {!loading &&
-        !error &&
-        results.length > 0 && (
-          <section aria-labelledby="search-results-heading">
+        {query && (
+          <div className="mt-10">
             <div className="mb-5">
-              <h2
-                id="search-results-heading"
-                className="text-xl font-bold text-white sm:text-2xl"
-              >
-                Results for "{searchQuery}"
+              <h2 className="text-xl font-bold text-white">
+                Results for "{query}"
               </h2>
 
-              <p className="mt-1 text-sm text-slate-500">
-                {results.length} result
-                {results.length !== 1 ? "s" : ""}
-              </p>
+              {!loading && !error && (
+                <p className="mt-1 text-sm text-slate-500">
+                  Page {pageFromUrl} of {totalPages}
+                </p>
+              )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-              {results.map((item) => (
-                <MovieCard
-                  key={`${item.media_type}-${item.id}`}
-                  movie={item}
-                />
-              ))}
-            </div>
-          </section>
-        )}
+            {loading && (
+              <div
+                role="status"
+                aria-label="Searching"
+              >
+                <MovieGridSkeleton count={12} />
+              </div>
+            )}
 
-      {!loading &&
-        !error &&
-        !searchQuery &&
-        results.length === 0 && (
-          <div className="rounded-xl border border-white/5 bg-[#121a2b] p-10 text-center">
-            <SearchIcon
-              size={40}
-              className="mx-auto text-[#6c63ff]"
-              aria-hidden="true"
-            />
+            {!loading && error && (
+              <div
+                className="rounded-xl border border-[#e85d75]/30 bg-[#e85d75]/10 p-5"
+                role="alert"
+              >
+                <div className="flex items-start gap-3">
+                  <AlertCircle
+                    size={22}
+                    className="mt-0.5 shrink-0 text-[#e85d75]"
+                    aria-hidden="true"
+                  />
 
-            <h2 className="mt-4 text-xl font-bold text-white">
-              Find something to watch
-            </h2>
+                  <div>
+                    <h2 className="font-semibold text-white">
+                      Search unavailable
+                    </h2>
 
-            <p className="mx-auto mt-2 max-w-md text-slate-400">
-              Enter a movie or TV show title above to start
-              exploring.
-            </p>
+                    <p className="mt-1 text-sm text-slate-300">
+                      {error}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {showNoResults && (
+              <div className="rounded-xl border border-white/5 bg-[#121a2b] p-10 text-center">
+                <h2 className="text-xl font-bold text-white">
+                  No results found
+                </h2>
+
+                <p className="mx-auto mt-2 max-w-md text-slate-400">
+                  Try another movie or TV show title.
+                </p>
+              </div>
+            )}
+
+            {showResults && (
+              <>
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+                  {results.map((movie) => (
+                    <MovieCard
+                      key={`${movie.media_type}-${movie.id}`}
+                      movie={movie}
+                    />
+                  ))}
+                </div>
+
+                {totalPages > 1 && (
+                  <nav
+                    className="mt-10 flex items-center justify-center gap-3"
+                    aria-label="Search pagination"
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handlePageChange(
+                          pageFromUrl - 1
+                        )
+                      }
+                      disabled={pageFromUrl <= 1}
+                      className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      <ChevronLeft
+                        size={17}
+                        aria-hidden="true"
+                      />
+                      Previous
+                    </button>
+
+                    <span
+                      className="min-w-24 text-center text-sm text-slate-400"
+                      aria-live="polite"
+                    >
+                      Page {pageFromUrl} of{" "}
+                      {totalPages}
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handlePageChange(
+                          pageFromUrl + 1
+                        )
+                      }
+                      disabled={
+                        pageFromUrl >= totalPages
+                      }
+                      className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      Next
+                      <ChevronRight
+                        size={17}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </nav>
+                )}
+              </>
+            )}
           </div>
         )}
+      </div>
     </main>
   );
 }

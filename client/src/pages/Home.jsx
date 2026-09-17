@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 
 import Hero from "../components/Hero";
 import MovieRow from "../components/MovieRow";
+import MovieRowSkeleton from "../components/MovieRowSkeleton";
+
 import {
   getPopularMovies,
   getPopularTVShows,
@@ -42,7 +44,9 @@ function Home() {
         ] = results;
 
         if (trendingResult.status === "fulfilled") {
-          setTrending(trendingResult.value.results || []);
+          setTrending(
+            trendingResult.value.results || []
+          );
         }
 
         if (popularMoviesResult.status === "fulfilled") {
@@ -67,7 +71,10 @@ function Home() {
           );
         }
       } catch (err) {
-        console.error("Failed to load Home data:", err);
+        console.error(
+          "Failed to load Home data:",
+          err
+        );
 
         if (!cancelled) {
           setError(
@@ -98,19 +105,12 @@ function Home() {
       >
         {loading && (
           <div
-            className="flex min-h-250px items-center justify-center"
             role="status"
             aria-label="Loading discovery content"
           >
-            <div className="flex items-center gap-3 text-slate-300">
-              <Loader2
-                size={24}
-                className="animate-spin text-[#6c63ff]"
-                aria-hidden="true"
-              />
-
-              <span>Loading discovery content...</span>
-            </div>
+            <MovieRowSkeleton />
+            <MovieRowSkeleton />
+            <MovieRowSkeleton />
           </div>
         )}
 

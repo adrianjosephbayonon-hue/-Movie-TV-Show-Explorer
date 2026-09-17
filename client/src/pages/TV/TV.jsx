@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 
 import MovieCard from "../../components/MovieCard";
+import MovieGridSkeleton from "../../components/MovieGridSkeleton";
 import { getPopularTVShows } from "../../api/movies";
 
 function TV() {
@@ -62,20 +63,8 @@ function TV() {
       </header>
 
       {loading && (
-        <div
-          className="flex min-h-[300px] items-center justify-center"
-          role="status"
-          aria-label="Loading TV shows"
-        >
-          <div className="flex items-center gap-3 text-slate-300">
-            <Loader2
-              size={24}
-              className="animate-spin text-[#6c63ff]"
-              aria-hidden="true"
-            />
-
-            <span>Loading TV shows...</span>
-          </div>
+        <div role="status" aria-label="Loading TV shows">
+          <MovieGridSkeleton count={12} />
         </div>
       )}
 

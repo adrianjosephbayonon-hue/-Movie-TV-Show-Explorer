@@ -14,6 +14,9 @@ const PORT = process.env.PORT || 5000;
 const CLIENT_URL =
   process.env.CLIENT_URL || "http://localhost:5173";
 
+const isProduction =
+  process.env.NODE_ENV === "production";
+
 if (!process.env.TMDB_API_KEY) {
   console.error("ERROR: TMDB_API_KEY is missing.");
   process.exit(1);
@@ -24,11 +27,19 @@ if (!process.env.TMDB_BASE_URL) {
   process.exit(1);
 }
 
+if (isProduction) {
+  app.set("trust proxy", 1);
+}
+
+app.disable("x-powered-by");
+
 app.use(helmet());
 
 app.use(
   cors({
     origin: CLIENT_URL,
+    methods: ["GET"],
+    allowedHeaders: ["Content-Type"],
   })
 );
 
