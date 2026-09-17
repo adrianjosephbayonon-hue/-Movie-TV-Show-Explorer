@@ -78,8 +78,8 @@ app.use("/api", movieRoutes);
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(
-    `CineVault API running on http://localhost:${PORT}`
+    `CineVault API running on port ${PORT}`
   );
 });
